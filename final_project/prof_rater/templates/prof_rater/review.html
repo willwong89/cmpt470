@@ -1,0 +1,160 @@
+<head>
+	<script type="text/javascript">
+		var onloadCallback = function() {
+			grecaptcha.render('html_element', {
+				'sitekey' : '6Lfpgv4SAAAAACI5Qdk8cMfNbNhTtF4eQZNbXpcU'
+			});
+		};
+    </script>
+</head>
+<h1>Rate {{ professor.first_name }}</h1>
+
+
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form action="{% url 'rate' professor.id %}" method="post">
+{% csrf_token %}
+
+<table>
+	<tr>
+		<td colspan="2">
+			<small class="label">Comments: </small><br />
+   			<textarea cols="250" id="id_comments" name="comments" rows="3"></textarea>
+   			<br />
+   			<small class="error-message-1" style="color:red;"></small>
+    	</td>
+	</tr>
+	<tr>
+		<td>
+			<small class="label">Course Taken</small><br />
+	        <input id = "id_course_subject" name="course_subject" type="text" value="" placeholder="CMPT" maxlength="4" size="4"/><br />
+	        <small class="notes">Course subject</small><br />
+	        <small class="error-message-2" style="color:red;"></small>
+
+		</td>
+		<td>
+			<small class="label"> . </small><br />
+    		<input id = "id_course_number" name="course_number" value="" placeholder="470" size="3" type="number" min="100" max="999"/><br />
+	        <small class="notes">Course number</small><br />
+	        <small class="error-message-3" style="color:red;"></small>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<small class="label">Write three phrases that best describes {{ professor.first_name }}{{ professor.last_name }}:</small><br />
+			<input id = "id_phrase_one" name="phrase_one" type="text" value="" placeholder="e.g hard to follow" maxlength="20" size="20"/>
+		    <input id = "id_phrase_two" name="phrase_two" type="text" value="" placeholder="e.g hard assignments" maxlength="20" size="20"/>
+		    <input id = "id_phrase_three" name="phrase_three" type="text" value="" placeholder="e.g not nice" maxlength="20" size="20"/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<small class="label">Final Score:</small><br />
+    		<input type="range" min="1" max="5" step="1" id="id_scoreSlider" name="final_score" value="1" /><br />
+    		<small class="notes" id="score_label" for="id_scoreSlider">Absolutely Terrible!</small>
+		</td>
+
+		<td>
+		    <small class="label">Interest in Course</small><br />
+		    <input type="range" min="1" max="5" step="1" id="id_interestSlider" name="interest_in_course" value="1" /><br />
+		    <small class="notes" id="interest_label" for="id_interestSlider">Don't care..</small>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div id="html_element"></div>
+			<br />
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<div class="rate-button" style="width:100%;" onclick="validate();">
+			Rate {{ professor.first_name }} {{ professor.last_name }}
+		</div>
+		{% comment %}
+		invisible button, triggered only if the form is validated.
+		{% endcomment %}
+		<input class="submit-button" type="submit" value="Rate {{ professor.first_name }}" style="display:none;"/>
+		</td>
+	</tr>
+</table>
+</form>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+
+<script type="text/javascript">
+function validate(){
+	var comment = $( "#id_comments" ).val();
+	var course_subject = $( "#id_course_subject" ).val();
+	var course_number = $( "#id_course_number" ).val();
+
+	var error_message = ["", "", ""];
+
+	if(comment=="") error_message[0] = "You must enter some comments.";
+	
+	if(course_subject.length <3 || course_subject.length>4) error_message[1] = "Course subject must be 3 - 4 characters.";
+	
+	if(course_number < 100 || course_number >999) error_message[2] = "Invalid course number.";
+	
+
+	if(error_message[0] != "" || error_message[1] !="" || error_message[2] != "" ){
+		$( ".error-message-1" ).html(error_message[0]);
+		$( ".error-message-2" ).html(error_message[1]);
+		$( ".error-message-3" ).html(error_message[2]);
+		var top = $('.review-form').position().top;
+		$(window).scrollTop( top );
+
+	}
+	else{
+		//isValidate, submit
+		var upperCrsSubject =  $( "#id_course_subject" ).val().toUpperCase();
+		$( "#id_course_subject" ).val(upperCrsSubject);
+		$( ".submit-button" ).click();
+	}
+}
+</script>
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+								 
+		$( "#id_scoreSlider" ).change(function() {
+			if( $( this ).val() >= 1 && $( this ).val() < 1.9 ){
+				$( "#score_label" ).html("Absolutely Terrible!");
+			}
+			if( $( this ).val() >= 2 && $( this ).val() < 2.9 ){
+				$( "#score_label" ).html("Meh..");
+			}
+			if( $( this ).val() >= 3 && $( this ).val() < 3.9 ){
+				$( "#score_label" ).html("Alright..");
+			}
+			if( $( this ).val() >= 4 && $( this ).val() < 4.9 ){
+				$( "#score_label" ).html("Great!");
+			}
+			if( $( this ).val() >= 5 && $( this ).val() < 5.9 ){
+				$( "#score_label" ).html("Awesome!");
+			}
+			
+		})
+		
+		$( "#id_interestSlider" ).change(function() {
+			if( $( this ).val() >= 1 && $( this ).val() < 1.9 ){
+				$( "#interest_label" ).html("Don't care..");
+			}
+			if( $( this ).val() >= 2 && $( this ).val() < 2.9 ){
+				$( "#interest_label" ).html("Hmm..");
+			}
+			if( $( this ).val() >= 3 && $( this ).val() < 3.9 ){
+				$( "#interest_label" ).html("Cool course");
+			}
+			if( $( this ).val() >= 4 && $( this ).val() < 4.9 ){
+				$( "#interest_label" ).html("So interesting!");
+			}
+			if( $( this ).val() >= 5 && $( this ).val() < 5.9 ){
+				$( "#interest_label" ).html("I Love it!");
+			}
+			
+		})
+	});
+</script>
+
+

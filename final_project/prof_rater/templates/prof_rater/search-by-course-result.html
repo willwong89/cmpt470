@@ -1,0 +1,181 @@
+<script type="text/javascript" src="http://knockoutjs.com/downloads/knockout-3.2.0.js"></script>
+
+<div class="sorting-options">
+	<button class="sortBySubjectA" data-bind='click: sortBySubjectA'> Subject </button>
+	<button class="sortBySubjectD" data-bind='click: sortBySubjectD'> Subject </button>
+	<button class="sortByTitleA" data-bind='click: sortByTitleA'> Title </button>
+	<button class="sortByTitleD" data-bind='click: sortByTitleD'> Title </button>
+	<button class="sortByDepartmentA" data-bind='click: sortByDepartmentA'> Department </button>
+	<button class="sortByDepartmentD" data-bind='click: sortByDepartmentD'> Department </button>
+	<button class="sortByScoreHighToLow" data-bind='click: sortByScoreHighToLow'> MetaScore(High>Low) </button>
+	<button class="sortByScoreLowToHigh" data-bind='click: sortByScoreLowToHigh'> MetaScore(Low>High) </button>
+</div>
+
+<script>
+
+$(".sortBySubjectD").hide();
+$(".sortByScoreLowToHigh").hide();
+$(".sortByTitleD").hide();
+$(".sortByDepartmentD").hide();
+
+//for toggle buttons
+$('.sortBySubjectA').click(function() {
+	$( ".sortBySubjectA" ).fadeOut("fast", function(){
+		$( ".sortBySubjectD" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortBySubjectD').click(function() {
+	$( ".sortBySubjectD" ).fadeOut("fast", function(){
+		$( ".sortBySubjectA" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+
+$('.sortByScoreHighToLow').click(function() {
+	$( ".sortByScoreHighToLow" ).fadeOut("fast", function(){
+		$( ".sortByScoreLowToHigh" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortByScoreLowToHigh').click(function() {
+	$( ".sortByScoreLowToHigh" ).fadeOut("fast", function(){
+		$( ".sortByScoreHighToLow" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByTitleA').click(function() {
+	$( ".sortByTitleA" ).fadeOut("fast", function(){
+		$( ".sortByTitleD" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortByTitleD').click(function() {
+	$( ".sortByTitleD" ).fadeOut("fast", function(){
+		$( ".sortByTitleA" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByDepartmentA').click(function() {
+	$( ".sortByDepartmentA" ).fadeOut("fast", function(){
+		$( ".sortByDepartmentD" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortByDepartmentD').click(function() {
+	$( ".sortByDepartmentD" ).fadeOut("fast", function(){
+		$( ".sortByDepartmentA" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+</script>
+
+{% if 'debug' == 'yes' %}
+<table>
+	{% for course in course_list %}
+	<tr>
+		<td>{{ course.subject }} {{ course.number }}</td>
+		<td>{{ course.title }}</td>
+		<td>{{ course.department_name }}</td>
+	    <td> Metascore: {{ course.meta_score }}</td>
+	    <td> Reviews: {{course.review_set_count}}  </td>
+	</tr>
+	{% endfor %}
+</table>
+{% endif %}
+
+<ul data-bind='foreach: courseToShow'>
+	<li>
+	<div class="meta-score">
+			<span data-bind='text: meta_score'></span>
+	</div>
+	<div class="left">
+		<div class="primary">
+			<a data-bind="attr: { href: url + subject+'/'+number, title: number }">
+				<span data-bind='text: subject'></span> 
+				<span data-bind='text: number'></span>:
+				<span data-bind='text: title'></span> 
+			</a>
+		</div>
+		<div class="secondary">
+			<span data-bind='text: department_name'></span><br />
+		</div>
+		<div class="review">
+			<span data-bind='text: review_set_count'></span> student review(s)
+		</div>
+	</div>
+		
+	</li>
+</ul>
+
+
+
+<!-- script for CourseModel -->
+<script>
+	var CourseModel = function(courses) {
+	    this.courses = ko.observableArray(courses);
+
+	    this.addCourse = function(s, n, t, dn, ms, rsc, u){
+	    	this.courses.push({
+	    		subject: s,
+	    		number: n,
+				title: t,
+				department_name: dn,
+				meta_score: ms,
+				review_set_count: rsc,
+				url: u
+			});
+	    };
+
+	    this.course_name_query = ko.observable(""),
+
+	    this.course_department_name_query = ko.observable(""),
+
+	    this.course_search_query = ko.observable(""),
+
+	    this.courseToShow = ko.pureComputed(function(){
+	    	var input_name_query = this.course_name_query();
+	    	var input_department_query = this.course_department_name_query();
+	    	var input_course_search_query = this.course_search_query();
+	    	
+	    	return ko.utils.arrayFilter(this.courses(), function(course){
+
+	    		//var course_title = course.title;
+	    		//var course_department_name = course.department_name;
+
+	    		//return (course_title.toLowerCase().indexOf(input_name_query.toLowerCase()) >= 0) 
+	    		// 	&& (course_department_name.toLowerCase().indexOf(input_department_query.toLowerCase())  >= 0);
+
+	    		//Super search query
+	    		var superstring = course.subject+course.number+course.title+course.department_name;
+	    		superstring = superstring.replace(/ /g,'').replace(/-/g,'').toLowerCase();
+	    		input_course_search_query = input_course_search_query.replace(/ /g,'').replace(/-/g,'').toLowerCase();
+	    		//alert(superstring);
+	    		return (superstring.indexOf(input_course_search_query) >= 0) 
+	    	});
+	    }, this);
+	};
+	 
+	//Sorting
+	this.sortBySubjectA = function() { this.courses.sort(function(a, b) { return a.subject <= b.subject ? -1 : 1; }); };
+	this.sortBySubjectD = function() { this.courses.sort(function(a, b) { return a.subject > b.subject ? -1 : 1; }); };
+	this.sortByTitleA = function() { this.courses.sort(function(a, b) { return a.title <= b.title ? -1 : 1; }); };
+	this.sortByTitleD = function() { this.courses.sort(function(a, b) { return a.title > b.title ? -1 : 1; }); };
+	this.sortByDepartmentA = function() { this.courses.sort(function(a, b) { return a.department_name <= b.department_name ? -1 : 1; }); };
+	this.sortByDepartmentD = function() { this.courses.sort(function(a, b) { return a.department_name > b.department_name ? -1 : 1; }); };
+	this.sortByScoreHighToLow = function() { this.courses.sort(function(a, b) { return a.meta_score > b.meta_score ? -1 : 1; }); };
+	this.sortByScoreLowToHigh = function() { this.courses.sort(function(a, b) { return a.meta_score <= b.meta_score ? -1 : 1; }); };	
+	courseModel = new CourseModel([]);
+	ko.applyBindings(courseModel, document.getElementById("search-by-course"));
+	
+</script>
+{% for course in course_list %}
+<script> 
+courseModel.addCourse("{{ course.subject }}", "{{ course.number }}", "{{ course.title }}", "{{course.department_name}}", "{{ course.meta_score }}", "{{ course.review_set_count }}", "http://127.0.0.1:8000/prof_rater/"); 
+//TODO: fix URL
+</script>
+{% endfor %}
+

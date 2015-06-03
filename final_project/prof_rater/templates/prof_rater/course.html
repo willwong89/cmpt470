@@ -1,0 +1,84 @@
+{% extends "prof_rater/base.html" %}
+
+{% comment %}
+This is the course page. It contains the prof-list 
+that belongs to this course
+{% endcomment %}
+
+
+{% block content %}
+
+<div class="debug">
+
+</div>
+
+
+
+<h1 class="big center">{{h1}}</h1>
+<div class="center"><small class="notes">You are searching within course <b>{{ h1 }}</b>.</small></div>
+
+<div id="search-by-prof">
+	<div class="search">
+		{% include 'prof_rater/search-by-prof-form.html' %}
+	</div>
+	<div class="result">
+	    {% include 'prof_rater/search-by-prof-result.html' %}
+    </div>
+</div>
+
+
+
+{% comment %}
+<ul>
+{% for prof in prof_list %}
+	<li>
+		{{ prof.id }} {{ prof.first_name }} {{ prof.last_name }} - {{ prof.department }} 
+		<br>
+
+		Metascore: {{prof.meta_score}} ({{prof.review_set_count}} Reviews) 
+	</li>
+{% endfor %}
+</ul>
+
+
+
+
+				id: pk,
+				first_name: fn,
+				last_name: ln,
+				department: d,
+				meta_score: ms,
+				review_set_count: rsc
+
+
+
+    
+
+
+
+
+<div class="course-list">
+	<h1>Course list 2</h1>
+	<ul>
+	{% for course in course_list %}
+		<li>{{ course.title }} - {{ course.subject }} {{ course.number }}
+			<ul>
+				<li>{{ course.department_name }}</li>
+				<li>{{ course.meta_score }}</li>
+				<li>{{ course.review_set_count }}</li>
+			</ul>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
+
+<script type="text/javascript" src="http://knockoutjs.com/downloads/knockout-3.2.0.js"></script>
+<div id="search-by-course">
+	{% include 'prof_rater/search-by-course-form.html' %}
+	{% include 'prof_rater/search-by-course-result.html' %}
+</div>
+
+<hr>
+{% endcomment %}
+
+{% endblock %}

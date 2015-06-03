@@ -1,0 +1,336 @@
+{% extends "prof_rater/base.html" %}
+
+{% comment %}
+This is the professor detail page. 
+
+{% endcomment %}
+
+
+{% block title %} 
+	{{ professor.first_name }}'s Profile page 
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="profile">
+	<h1 class="big center">
+		<span class="meta-score">{{ meta_score }}</span>
+		{{ professor.first_name }} {{ professor.last_name }}
+	</h1>
+	<br />
+	<div class="center"><small class="notes">Professor in the {{ professor.department.name }} department at Simon Fraser University</small></div>
+
+</div>
+
+<div class="slider">
+	<div class="word-cloud"></div>
+	<div class="histogram" style="display:none;"><h2>Review Score Distribution</h2></div>
+	<div class="slider-buttons">
+		<div class="cloud-button" onclick="showWordCloud();"  style="background-color:#111;"> </div>
+		<div class="hist-button" onclick="showHistogram();" > </div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	function showWordCloud(){
+		$( ".histogram" ).fadeOut("fast", function(){
+			$( ".word-cloud" ).fadeIn("fast");
+		});
+		
+		$( ".cloud-button" ).css( "background-color", "#111" );
+		$( ".hist-button" ).css( "background-color", "#888" );
+		return false;
+	}
+	function showHistogram(){
+		$( ".word-cloud" ).fadeOut("fast", function(){
+			$( ".histogram" ).fadeIn("fast");
+		});
+		$( ".hist-button" ).css( "background-color", "#111" );
+		$( ".cloud-button" ).css( "background-color", "#888" );
+		return false;
+	}
+</script>
+
+<div class="clear"></div>
+
+
+<div class="review-list">
+	<div class="button">
+		<a href= "#" class="toggle-review-form">
+			Rate {{ professor.first_name }} {{ professor.last_name }}
+		</a>
+	</div>
+    
+    <div class="review-form" style="display:none;"> 
+		{% include "prof_rater/review.html" %}
+	</div>
+
+
+	<h3>{{ professor.review_set.count }} Student Rating(s)</h3>
+
+
+    <script>var reviewScores = [];</script>
+
+
+
+
+
+
+
+<!--sort buttons -->
+<div class="sorting-options">
+	
+	<button type="button" class="sortByCourseA2" > Course </button>
+	<button type="button" class="sortByCourseD2"> Course </button>
+	<button type="button" class="sortByDateA" > Date </button>
+	<button type="button" class="sortByDateD"> Date </button>
+	<button type="button" class="sortByScoreHighToLow4" > Score(High first) </button>
+	<button type="button" class="sortByScoreLowToHigh4" > Score(Low first) </button>
+	
+</div>
+
+
+
+
+
+	<ul>
+	    {% for review in professor.review_set.all %}
+    	<li>
+	    	<div class="review">
+				<div class="meta-score">
+					<span class="score">{{review.final_score}}</span>
+	                <script>reviewScores.push("{{ review.final_score }}");</script>
+				</div>
+				<div class="left">
+					<div class="primary">
+					 	<a href="../{{ review.course_subject }}/{{ review.course_number }}">
+					 		<span class="course1">{{ review.course_subject }} {{ review.course_number }} </span>
+					 	</a>
+					 	<span class="date1"><small style="float:right;"> {{ review.date_published }}</small></span>
+					</div>
+					<div class="secondary">
+						{{ review.comments }}
+					</div>
+					<br />
+					<div class="rating" style="float:left;">
+			        	Rating: 
+			        	<span class="score_text"></span>
+			        </div>
+			        <div class="course-interest" style="float:right;">
+			        	Course Interest: <span class="course_interest">{{ review.interest_in_course }}</span>
+			        </div>
+				</div>
+			</div>
+	    </li>
+
+	    {% endfor %}
+	</ul>
+
+</div>
+<script>var words = [];</script>
+{% for word in word_cloud_entries %}
+<script>
+	words.push("{{ word.phrase_one }}");
+	words.push("{{ word.phrase_two }}");
+	words.push("{{ word.phrase_three }}");
+</script>
+{% endfor %}
+
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://jardindesconnaissances.googlecode.com/svn-history/r82/trunk/public/js/d3.layout.cloud.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/tinysort/1.5.6/jquery.tinysort.min.js"></script>
+
+<script type="text/javascript">
+	
+	$(".sortByScoreLowToHigh4").hide();
+	$(".sortByCourseD2").hide();
+	$(".sortByDateD").hide();
+
+	//for toggle buttons
+	$('.sortByCourseA2').click(function() {
+
+		$('ul li').tsort('span.course1',{order:'asc'});
+		$( ".sortByCourseA2" ).fadeOut("fast", function(){
+			$( ".sortByCourseD2" ).fadeIn("fast"); //.slideToggle()	
+		});
+		return false;
+	});
+	$('.sortByCourseD2').click(function() {
+		$('ul li').tsort('span.course1',{order:'desc'});
+
+		$( ".sortByCourseD2" ).fadeOut("fast", function(){
+			$( ".sortByCourseA2" ).fadeIn("fast"); //.slideToggle()	
+		});
+		return false;
+	});
+
+
+	$('.sortByScoreHighToLow4').click(function() {
+		
+		$('ul li').tsort('span.score',{order:'desc'});
+		
+		$( ".sortByScoreHighToLow4" ).fadeOut("fast", function(){
+			$( ".sortByScoreLowToHigh4" ).fadeIn("fast"); //.slideToggle()	
+		});
+		return false;
+	});
+	$('.sortByScoreLowToHigh4').click(function() {
+		$('ul li').tsort('span.score',{order:'asc'});
+		$( ".sortByScoreLowToHigh4" ).fadeOut("fast", function(){
+			$( ".sortByScoreHighToLow4" ).fadeIn("fast"); //.slideToggle()	
+		});
+		return false;
+	});
+
+	$('.sortByDateA').click(function() {
+		$('ul li').tsort('span.date1',{order:'asc'});
+		$( ".sortByDateA" ).fadeOut("fast", function(){
+			$( ".sortByDateD" ).fadeIn("fast"); //.slideToggle()	
+		});
+		return false;
+	});
+
+	$('.sortByDateD').click(function() {
+		$('ul li').tsort('span.date1',{order:'desc'});
+		$( ".sortByDateD" ).fadeOut("fast", function(){
+			$( ".sortByDateA" ).fadeIn("fast"); //.slideToggle()	
+		});
+		return false;
+	});
+
+
+
+$( document ).ready(function() {
+							 
+
+	$( "li" ).each(function( index ) {
+		var reviewScoreHtml = $( this ).find(".score").eq(0);
+		var reviewScoreValue = parseFloat(reviewScoreHtml.text()).toFixed(1);
+		
+		var rating = reviewScoreValue;
+		var rating_text = $( this ).find(".score_text");
+		
+		//review metaScore decimal fix
+		reviewScoreHtml.html(reviewScoreValue);
+
+		if( rating >= 1 && rating < 1.9 ) rating_text.html("Terrible!"); 
+		if( rating >= 2 && rating < 2.9 ) rating_text.html("Meh.."); 
+		if( rating >= 3 && rating < 3.9 ) rating_text.html("Alright.."); 
+		if( rating >= 4 && rating < 4.9 ) rating_text.html("Great!"); 
+		if( rating >= 5 && rating < 5.9 ) rating_text.html("Awesome!"); 
+		
+		var course_interest = $( this ).find(".course_interest");
+		var interest_value = parseFloat($( this ).find(".course_interest").text());
+		
+		if( interest_value >= 1 && interest_value < 1.9 ) course_interest.html("Don't care.."); 
+		if( interest_value >= 2 && interest_value < 2.9 ) course_interest.html("Hmm..");
+		if( interest_value >= 3 && interest_value < 3.9 ) course_interest.html("Cool course");
+		if( interest_value >= 4 && interest_value < 4.9 ) course_interest.html("So interesting!");
+		if( interest_value >= 5 && interest_value < 5.9 ) course_interest.html("I Love it!");
+
+
+	});
+	
+	
+	
+
+
+	$('.toggle-review-form').click(function() {
+		$( ".review-form" ).slideToggle( "slow" ); return false;
+	});
+	
+	//word cloud---------------------------
+	if(words.length != 0) {
+		var fill = d3.scale.category20();
+		d3.layout.cloud().size([800, 200])//700, 700
+		  .words(words.map(function(d) {
+			return {text: d, size: 12 + Math.random() * 40};
+		  }))
+		  .padding(1)
+		  .rotate(function() { return ~~(Math.random() * 2) * 90; })
+		  .font("Impact")
+		  .fontSize(function(d) { return Math.max(20, Math.min(d.size, 24)); })
+		  .on("end", draw)
+		  .start();
+		function draw(words) {
+		d3.select(".word-cloud").append("svg")
+			.attr("width", 800)//600
+			.attr("height", 200)//600
+		  .append("g")
+			.attr("transform", "translate(400,100)")//w/2, h/2 300,300
+		  .selectAll("text")
+			.data(words)
+		  .enter().append("text")
+			.style("font-size", function(d) { return d.size + "px"; })
+			.style("font-family", "Impact")
+			.style("fill", function(d, i) { return fill(i); })
+			.attr("text-anchor", "middle")
+			.attr("transform", function(d) {
+			  return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+			})
+			.text(function(d) { return d.text; });
+		}
+		$( ".word-cloud" ).hide();
+		$( ".word-cloud" ).fadeIn(2000);
+	}
+	
+	//Histogram-------------------------------------------
+	if(reviewScores.length > 4){
+		var formatCount = d3.format(",.0f");
+	
+		var margin = {top: 10, right: 30, bottom: 30, left: 30},
+		width = 800 - margin.left - margin.right,
+		height = 200 - margin.top - margin.bottom;
+		numOfBins = 8;
+	
+		var x = d3.scale.linear()
+		.domain([1,5])
+		.range([0, width]);
+		
+		var data = d3.layout.histogram()
+		.bins(numOfBins)
+		(reviewScores);
+	
+		var y = d3.scale.linear()
+		.domain([0, d3.max(data, function(d) { return d.y; })])
+		.range([height, 0]);
+	
+		var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom");
+	
+		var svg = d3.select(".histogram").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+		var bar = svg.selectAll(".bar")
+		.data(data)
+	  .enter().append("g")
+		.attr("class", "bar")
+		.attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+	
+		bar.append("rect")
+		.attr("x", 1)
+		.attr("width", width/data.length - 1)
+		.attr("height", function(d) { return height - y(d.y); });
+	
+		bar.append("text")
+		.attr("dy", ".75em")
+		.attr("y", 6)
+		.attr("x", (width/data.length) / 2)
+		.attr("text-anchor", "middle")
+		.text(function(d) { return formatCount(d.y); });
+	
+		svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+	}
+
+});
+</script>
+{% endblock %}

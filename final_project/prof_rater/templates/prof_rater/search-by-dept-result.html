@@ -1,0 +1,146 @@
+<script type="text/javascript" src="http://knockoutjs.com/downloads/knockout-3.2.0.js"></script>
+
+<div class="sorting-options">
+	<button class="sortByCodeA" data-bind='click: sortByCodeA'> Course Code </button>
+	<button class="sortByCodeD" data-bind='click: sortByCodeD'> Course Code </button>
+	<button class="sortByNameA" data-bind='click: sortByNameA'> Department Name </button>
+	<button class="sortByNameD" data-bind='click: sortByNameD'> Department Name </button>
+	<button class="sortByScoreHighToLow2" data-bind='click: sortByScoreHighToLow2'> MetaScore(High first) </button>
+	<button class="sortByScoreLowToHigh2" data-bind='click: sortByScoreLowToHigh2'> MetaScore(Low first) </button>
+</div>
+
+<script>
+$(".sortByCodeD").hide();
+$(".sortByNameD").hide();
+$(".sortByScoreLowToHigh2").hide();
+
+//for toggle buttons
+$('.sortByCodeA').click(function() {
+	$( ".sortByCodeA" ).fadeOut("fast", function(){
+		$( ".sortByCodeD" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortByCodeD').click(function() {
+	$( ".sortByCodeD" ).fadeOut("fast", function(){
+		$( ".sortByCodeA" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+
+$('.sortByScoreHighToLow2').click(function() {
+	$( ".sortByScoreHighToLow2" ).fadeOut("fast", function(){
+		$( ".sortByScoreLowToHigh2" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortByScoreLowToHigh2').click(function() {
+	$( ".sortByScoreLowToHigh2" ).fadeOut("fast", function(){
+		$( ".sortByScoreHighToLow2" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByLastNameD').click(function() {
+	$( ".sortByLastNameD" ).fadeOut("fast", function(){
+		$( ".sortByLastNameA" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByNameA').click(function() {
+	$( ".sortByNameA" ).fadeOut("fast", function(){
+		$( ".sortByNameD" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+</script>
+
+{% if 'debug' == 'yes' %}
+<table>
+	{% for dept in dept_list %}
+	<tr>
+		<td>{{ dept.code }} </td>
+		<td>{{ dept.name }}</td>
+	    <td> Metascore: {{ dept.meta_score }}</td>
+	    <td> Reviews: {{dept.review_set_count}} </td>
+	</tr>
+	{% endfor %}
+</table>
+{% endif %}
+
+
+<ul data-bind='foreach: deptToShow'>
+	<li>
+	<div class="meta-score">
+		<span data-bind='text: meta_score'></span>
+	</div>
+	<div class="left">
+		<!-- <a data-bind="attr: { href: 'department/'+code, title: code }"> -->
+		<a data-bind="attr: { href: code, title: code }">
+			<span data-bind='text: code'></span>:
+			<span data-bind='text: name'></span> 
+		</a> <br/>
+
+		<div class="review">
+			<span data-bind='text: review_set_count'></span> student review(s)
+		</div>
+	</div>
+	</li>
+</ul>
+
+
+
+<!-- script for DepartmentModel -->
+<script>
+	var DepartmentModel = function(departments) {
+	    this.departments = ko.observableArray(departments);
+
+	    this.addDept = function(c, n, ms, rsc){
+	    	this.departments.push({
+	    			code: c,
+	    			name: n,
+				meta_score: ms,
+				review_set_count: rsc
+			});
+	    };
+
+	    this.department_search_query = ko.observable(""),
+
+	    this.deptToShow = ko.pureComputed(function(){
+	    	var input_department_search_query = this.department_search_query();
+	    	
+	    	return ko.utils.arrayFilter(this.departments(), function(department){
+
+	    		//Super search query
+	    		var superstring = department.code+department.name	;
+	    		superstring = superstring.replace(/ /g,'').replace(/-/g,'').toLowerCase();
+	    		input_department_search_query = input_department_search_query.replace(/ /g,'').replace(/-/g,'').toLowerCase();
+	    		//alert(superstring);
+	    		return (superstring.indexOf(input_department_search_query) >= 0) 
+	    	});
+	    }, this);
+	};
+
+	 //Sorting
+	this.sortByCodeA = function() { this.departments.sort(function(a, b) { return a.code <= b.code ? -1 : 1; });};
+	this.sortByCodeD = function() { this.departments.sort(function(a, b) { return a.code > b.code ? -1 : 1; });};
+	this.sortByNameA = function() { this.departments.sort(function(a, b) { return a.name <= b.name ? -1 : 1; });};
+	this.sortByNameD = function() { this.departments.sort(function(a, b) { return a.name > b.name ? -1 : 1; });};
+	this.sortByScoreHighToLow2 = function() { this.departments.sort(function(a, b) { return a.meta_score > b.meta_score ? -1 : 1; });};
+	this.sortByScoreLowToHigh2 = function() { this.departments.sort(function(a, b) { return a.meta_score <= b.meta_score ? -1 : 1; });};	
+	
+	departmentModel = new DepartmentModel([]);
+	ko.applyBindings(departmentModel, document.getElementById("search-by-dept"));
+</script>
+{% for dept in dept_list %}
+<script> 
+departmentModel.addDept("{{ dept.code }}", "{{ dept.name }}", "{{ dept.meta_score }}", "{{ dept.review_set_count }}"); 
+</script>
+{% endfor %}
+
+
+{% comment %}
+{% endcomment %}
+

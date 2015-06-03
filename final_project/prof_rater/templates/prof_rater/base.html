@@ -1,0 +1,41 @@
+{% comment %}
+Note that base.html has <head></head> and <body></body>.
+https://docs.djangoproject.com/en/dev/ref/templates/builtins/?from=olddocs#include
+https://docs.djangoproject.com/en/dev/topics/templates/#template-inheritance
+{% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>{% block title %}Prof Rater by Team Delta 13{% endblock %}</title>
+
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'style.css' %}" type="text/css" />
+
+	<!-- JQuery library -->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	
+</head>
+
+<body>
+	<header>
+		<p><i><a href= "{% url 'index' %}">PROF RATER</a></i></p>
+
+	</header>
+
+	<div id="content">
+	{% block content %}
+	
+	
+	{% endblock %}
+	</div>
+
+	<footer>
+		Team Delta 13 <br/>
+		&copy; 2014 <br />
+		All Rights Reserved
+	</footer>
+
+</body>
+</html>

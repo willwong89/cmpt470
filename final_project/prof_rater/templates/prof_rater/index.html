@@ -1,0 +1,132 @@
+{% extends "prof_rater/base.html" %}
+
+{% comment %}
+This is the index page. 
+{% endcomment %}
+
+{% block content %}
+
+<div class="debug">
+
+
+
+</div>
+
+{% comment %}
+	jsko library has to be linked before including 'search-by-xxx-result.html' 
+	jsko code for binding and ajax is in search-by-xxx-result.html file.
+{% endcomment %}
+<script type="text/javascript" src="http://knockoutjs.com/downloads/knockout-3.2.0.js"></script>
+
+
+
+
+
+{% load staticfiles %}
+<div id="search-by-menu">
+	<h1>Search by</h1>
+	
+	<ul>
+		<li><a href="#" class="toggle-search-by-prof">
+			<span class="icon" ><img src="{% static 'icons/prof.png' %}" ></span><br />
+			professor 
+		</a></li>
+		<li><a href="#" class="toggle-search-by-dept">
+			<span class="icon" ><img src="{% static 'icons/dept.png' %}" ></span><br />
+			department
+		</a></li>
+		<li><a href="#" class="toggle-search-by-course">
+			<span class="icon" ><img src="{% static 'icons/course.png' %}" ></span><br />
+			course
+		</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+
+
+<div id="search-by-prof">
+	<div class="search">
+		<h1>Search Criteria</h1>
+		{% include 'prof_rater/search-by-prof-form.html' %}
+	</div>
+	<div class="result">
+	    <h1>Search Results [ by professor ]</h1>
+	    {% include 'prof_rater/search-by-prof-result.html' %}
+    </div>
+</div>
+
+<div id="search-by-dept">
+	<div class="search">
+		<h1>Search Criteria</h1>
+		{% include 'prof_rater/search-by-dept-form.html' %}
+	</div>
+	<div class="result">
+		<h1 style="display:inline">Search Results [ by department ]</h1>
+		<!-- <div class="right" style="display:block"><small>sort by</small></div> -->
+		{% include 'prof_rater/search-by-dept-result.html' %}
+	</div>
+</div>
+
+<div id="search-by-course">
+	<div class="search">
+		<h1 onclick="test()">Search Criteria</h1>
+	    {% include 'prof_rater/search-by-course-form.html' %}
+	</div>
+
+	<div class="result">
+    	<h1>Search Results [ by course ]</h1>
+    	{% include 'prof_rater/search-by-course-result.html' %}		
+    </div>
+</div>
+
+
+
+
+{% comment %}
+	References:
+		http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
+		http://knockoutjs.com/examples/animatedTransitions.html
+		http://opensoul.org/2011/06/23/live-search-with-knockoutjs/
+{% endcomment %}
+
+
+
+
+{% comment %} jQuery code {% endcomment %}
+<script>
+$( document ).ready(function() {
+	// $( "#search-by-prof" ).hide();  //show search-by-prof by default
+	$( "#search-by-dept" ).hide();
+	$( "#search-by-course" ).hide();
+
+	$('.toggle-search-by-prof').click(function() {
+		$( "#search-by-dept" ).fadeOut("fast");
+		$( "#search-by-course" ).fadeOut("fast");
+		$( "#search-by-prof" ).slideToggle( "slow" ); 
+		return false;
+	});
+	$('.toggle-search-by-dept').click(function() {
+		$( "#search-by-prof" ).fadeOut("fast");
+		$( "#search-by-course" ).fadeOut("fast");
+		$( "#search-by-dept" ).slideToggle( "slow" ); 
+		return false;
+	});
+	$('.toggle-search-by-course').click(function() {
+		$( "#search-by-prof" ).fadeOut("fast");
+		$( "#search-by-dept" ).fadeOut("fast");
+		$( "#search-by-course" ).slideToggle( "slow" ); 
+		return false;
+	});
+
+});
+
+function test(){
+	alert('test');
+}
+
+</script>
+
+
+<br />
+
+{% endblock %}

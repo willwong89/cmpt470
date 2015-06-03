@@ -1,0 +1,29 @@
+{% extends "prof_rater/base.html" %}
+
+{% comment %}
+This is the department page. It contains the course-list and prof-list 
+that belongs to this department
+{% endcomment %}
+
+
+{% block content %}
+
+<div class="debug">
+	<h1>{{message}}</h1>
+</div>
+
+<h1 class="big center">{{ dept.code }} {{ dept.name }}</h1>
+<div class="center"><small class="notes">You are searching within the <b>{{ dept.name }}</b> department.</small></div>
+
+<div id="search-by-course">
+	<div class="search">
+		{% include 'prof_rater/search-by-course-form.html' %}
+	</div>
+	<div class="result">
+		{% include 'prof_rater/search-by-course-result.html' %}
+	</div>
+</div>
+
+<hr>
+
+{% endblock %}

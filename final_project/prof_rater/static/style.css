@@ -1,0 +1,336 @@
+@import url('http://fonts.googleapis.com/css?family=Roboto:500,900italic,900,400italic,100,700italic,300,700,500italic,400');
+/* BASIC ELEMENTS */
+body{ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin:0px; }
+body a{ color: #333;}
+h1 { text-align: left; }
+form{ text-align: left; color: #333;}
+hr{ border: 1px black solid; opacity: 0.1; }
+header, footer{ padding: 1em; }
+header, footer{	text-align: center; background-color:black; color:white; height: 60px; }
+
+
+/* FORM AND TABLE IN GENERAL */
+form table input{
+	border: 2px solid transparent;
+	border-bottom: 2px #888 solid;
+	padding:0.2em;
+	font-size: 3em;
+	width:100%; }
+form table textarea{
+	border: 2px solid transparent;
+	border-bottom: 2px #888 solid;
+	padding:0.2em;
+	font-size: 2em;
+	width:100%;
+}
+form table input[type="input"]:focus, form table textarea:focus{
+	outline:0px !important;
+	-webkit-appearance:none;
+	border: 2px #888 solid; }
+
+
+/* HELPER */
+.clear{ clear:both;}
+.center{ text-align: center;}
+.left{ text-align: left;}
+.right{ text-align: right;}
+h1.big{ font-size:3em; line-height: 1.2; margin-bottom: 0.06em;}
+small.notes{  color: #888; font-style: italic; }
+
+/* HEADER */
+header p a{ text-decoration: none; color: white; border: 3px solid white; padding: 2px 4px;	font-size: 2.5em; }
+
+/* CONTENT */
+#content{ width: 75%; min-height: 450px; margin:0 auto 0 auto; }
+
+/* FOOTER */
+footer{ width:100%; font-size: 11px; font-weight:200; }
+
+/* DEBUG */
+.debug{ background-color: red; }
+
+/* TYPE */
+h1 {
+	font-size: 24px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 26.3999996185303px;
+}
+h3 {
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
+	line-height: 15.3999996185303px;
+}
+p {
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+blockquote {
+	font-size: 18px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 25px;
+}
+pre {
+	font-size: 13px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 18.5714302062988px;
+}
+
+
+
+/*
+	-index.html
+	header
+	#content
+		#search-by-prof
+			.search
+				form
+			.result
+				h1
+				ul
+					li
+		#search-by-dept
+		#search-by-course
+	footer
+*/
+
+/* SEARCH */
+#search-by-menu { text-align: center; }
+#search-by-menu ul li{
+	text-align: center;
+	list-style-type: none;
+	display:inline-block;
+	opacity:1.0;
+    -webkit-transition: opacity 1s; /* For Safari 3.1 to 6.0 */
+    transition: opacity 1s; }
+#search-by-menu ul li:hover{ opacity:0.5; }
+#search-by-menu ul li a{
+	text-decoration: none;
+	font-size: 12px; }
+#search-by-menu ul li a:hover{ color: #FF1493; }
+#search-by-menu ul li .icon img{ width: 100px; }
+#search-by-prof .search, #search-by-dept .search, #search-by-course .search{ }
+
+.search form table { width: 100%; margin-bottom:2.75em; }
+.search form table tr{ margin-bottom:0.55em; }
+
+
+/* WORDCLOUD */
+.word-cloud{
+	margin: 15px auto;
+	padding: 2em 0;
+	text-align: center;
+}
+.word-cloud svg{
+	margin: 0px auto;
+}
+
+
+/* RESULT & REVIEW */
+.result ul, .review-list ul { padding-left: 0px; }
+.result ul li, .review-list ul li{
+	list-style-type: none;
+	display:inline-block;
+	background-color: #FFF;
+	box-shadow: 2px 2px 5px #888888;
+	width: 90%;
+	/*padding: 1em 1em;*/
+	/*padding: 1em 2em;*/
+	margin: 0.3em 0 0.3em 0;
+	/*margin-right:100px;*/
+	text-align: left;
+	/*border-left: 2em #CCC solid;*/
+}
+/* result*/
+.result ul li{ color:#000; width: 100%; padding: 1em 0;}
+.result ul li a{ font-size: 1.5em;  }
+.result ul li a:hover{ color: #FF1493;  }
+.result ul li .secondary{ color: #666;} 
+.result ul li .review{ color:#666; }
+.result ul li .review span{ color:#000; font-size:1.3em; }
+.result ul li .left{
+	width: 80%;
+	height:inherit;
+	float:left;
+}
+.result ul li .primary,.result ul li .secondary,.result ul li .review{ }
+.result ul li .meta-score{ text-align: center; height: inherit; float:left; margin: 0 15px 0 15px;}
+
+/*review-list*/
+.review-list ul li{ color:#000; width: 100%; padding: 1em 0;}
+.review-list ul li a{ font-size: 1.5em;  }
+.review-list ul li a:hover{ color: #FF1493;  }
+.review-list ul li .secondary{ color: #666;} 
+.review-list ul li .review{ color:#666; }
+.review-list ul li .meta-score{ color:#FFF; }
+/*.review-list ul li .review span{ color:#000; font-size:1.3em; }*/
+.review-list ul li .left{
+	width: 80%;
+	height:inherit;
+	float:left;
+}
+.review-list ul li .primary,.review-list ul li .secondary,.review-list ul li .review{ }
+.review-list ul li .meta-score{ text-align: center; height: inherit; float:left; margin: 0 15px 0 15px;}
+
+
+.meta-score { 
+	background-color: rgb(3, 201, 3);
+	color: #FFF;
+	font-size: 28px;
+	padding: 15px;
+}
+
+
+
+
+
+/* REVIEW LIST */
+.review-list ul {
+	/*list-style-type: none;
+	margin-left: -40px;*/
+}
+.review-list ul li{
+/*	list-style-type: none;
+	display:inline-block;
+	background-color: #FFF;
+	box-shadow: 2px 2px 5px #888888;
+	width: 90%;
+	padding: 1em 1em;
+	margin: 0.3em 0 0.3em 0;
+	text-align: left;
+	border-left: 2em #CCC solid;*/
+}
+/* REVIEW LIST Course Subject & Number input style */
+.review-form form table #id_course_subject,
+.review-form form table #id_course_number{	width:95%; }
+
+
+/* REVIEW FORM */
+.review-form form{ }
+.review-form form input{ }
+.review-form form table td{ padding-bottom: 2em; }
+.review-form form table #id_course_subject,
+.review-form form table #id_course_number,
+.review-form form table #id_phrase_one,
+.review-form form table #id_phrase_two,
+.review-form form table #id_phrase_three{
+/*	border: 0px;
+	border-bottom: 2px #888 solid;
+	padding:0.2em;
+	font-size: 3em;
+	width:100%;*/
+}
+
+/* PROFILE BUTTONS */
+.button, .rate-button{
+	padding:1em 0;
+}
+.button a, input[type=submit], .rate-button{
+	font-size: 12px;
+	color:black;
+	background-color: rgb(128, 180, 255);
+	padding:1em;
+	text-decoration: none;
+	border-radius: 0.3em;	
+}
+.button a:hover, input[type=submit]:hover, .rate-button:hover{
+	background-color: #666;
+    -webkit-transition: background-color 0.5s; /* For Safari 3.1 to 6.0 */
+    transition: background-color 0.5s;
+}
+
+input[type=range]{
+	background-color: red;
+	color:red;
+	width:90%;
+	padding: 0em;
+}
+/* PROFILE SUBMIT BUTTON */
+.review-form form table input[type=submit]{
+	background-color: green;
+	color: white;
+}
+.review-form form table input[type=submit]:hover{
+	background-color: #222;
+    -webkit-transition: background-color 0.5s; /* For Safari 3.1 to 6.0 */
+    transition: background-color 0.5s;
+}
+
+.rate-button {
+	background-color:  rgb(3, 201, 3);
+	color:#fff;
+	font-size:1.6em;
+}
+/* Sorting buttons */
+
+
+.sorting-options button{
+	background-color: transparent;
+	color:#000;
+	border: 1px solid #000;
+	font-size:12px;
+}
+
+.sorting-options button:hover{
+	background-color: #FF1493;
+	color: #FFF;
+	border: 1px solid #FFF;
+	webkit-transition:all 0.25s; /* For Safari 3.1 to 6.0 */
+	transition: all 0.25s;
+}
+
+/*Profile page histogram Style*/
+.bar rect {
+  fill: steelblue;
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: #fff;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.histogram {
+	text-align:center;	
+}
+.histogram h2 {
+	color:steelblue;
+}
+
+.slider, .histogram{
+	min-height: 267px;
+}
+.slider-buttons{
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	z-index: 3;
+	margin: -50px auto;
+	padding-bottom: 50px;
+
+	margin: 0px auto;
+	padding-bottom: 10px;
+}
+.cloud-button, .hist-button{
+	background-color: #888;
+	width: 20px;
+	height: 20px;
+	float: left;
+	margin: 2.5px;
+}
+

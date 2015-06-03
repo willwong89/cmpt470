@@ -1,0 +1,150 @@
+<script type="text/javascript" src="http://knockoutjs.com/downloads/knockout-3.2.0.js"></script>
+
+<div class="sorting-options">
+	<button class="sortByFirstNameA" data-bind='click: sortByFirstNameA'> First name </button>
+	<button class="sortByFirstNameD" data-bind='click: sortByFirstNameD'> First name </button>
+	<button class="sortByLastNameA" data-bind='click: sortByLastNameA'> Last name </button>
+	<button class="sortByLastNameD" data-bind='click: sortByLastNameD'> Last name </button>
+	<button class="sortByDepartmentA3" data-bind='click: sortByDepartmentA3'> Department </button>
+	<button class="sortByDepartmentD3" data-bind='click: sortByDepartmentD3'> Department </button>
+	<button class="sortByScoreHighToLow3" data-bind='click: sortByScoreHighToLow3'> MetaScore(High first) </button>
+	<button class="sortByScoreLowToHigh3" data-bind='click: sortByScoreLowToHigh3'> MetaScore(Low first) </button>
+</div>
+
+
+<script>
+
+$(".sortByFirstNameD").hide();
+$(".sortByLastNameD").hide();
+$(".sortByDepartmentD3").hide();
+$(".sortByScoreLowToHigh3").hide();
+
+
+//for toggle buttons
+$('.sortByFirstNameA').click(function() {
+	$( ".sortByFirstNameA" ).fadeOut("fast", function(){
+		$( ".sortByFirstNameD" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortByFirstNameD').click(function() {
+	$( ".sortByFirstNameD" ).fadeOut("fast", function(){
+		$( ".sortByFirstNameA" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+
+$('.sortByScoreHighToLow3').click(function() {
+	$( ".sortByScoreHighToLow3" ).fadeOut("fast", function(){
+		$( ".sortByScoreLowToHigh3" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+$('.sortByScoreLowToHigh3').click(function() {
+	$( ".sortByScoreLowToHigh3" ).fadeOut("fast", function(){
+		$( ".sortByScoreHighToLow3" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByLastNameD').click(function() {
+	$( ".sortByLastNameD" ).fadeOut("fast", function(){
+		$( ".sortByLastNameA" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByLastNameA').click(function() {
+	$( ".sortByLastNameA" ).fadeOut("fast", function(){
+		$( ".sortByLastNameD" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByDepartmentA3').click(function() {
+	$( ".sortByDepartmentA3" ).fadeOut("fast", function(){
+		$( ".sortByDepartmentD3" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+
+$('.sortByDepartmentD3').click(function() {
+	$( ".sortByDepartmentD3" ).fadeOut("fast", function(){
+		$( ".sortByDepartmentA3" ).fadeIn("fast"); //.slideToggle()	
+	});
+	return false;
+});
+</script>
+
+<ul data-bind='foreach: professorToShow'>
+	<li>
+		<div class="meta-score">
+			<span data-bind='text: meta_score'></span>
+		</div>
+		<div class="left">
+			<!-- TODO: URL fix -->
+			<a data-bind="attr: { href: id, title: id }">
+	    		<span data-bind='text: first_name'></span> <span data-bind='text: last_name'></span>
+	    	</a> <br />
+
+	    	<span data-bind='text: department'></span><br/>
+
+	    	<div class="review">
+				<span data-bind='text: review_set_count'></span> student review(s)
+			</div>
+		</div>
+	</li>
+</ul>
+
+
+
+<!-- script for ProfessorModel -->
+<script>
+	var ProfessorModel = function(professors) {
+	    this.professors = ko.observableArray(professors);
+
+	    this.addProf = function(pk, fn, ln, d, ms, rsc){
+	    	this.professors.push({
+				id: pk,
+				first_name: fn,
+				last_name: ln,
+				department: d,
+				meta_score: ms,
+				review_set_count: rsc
+			});
+	    };
+
+	    this.prof_name_query = ko.observable(""),
+
+	    this.prof_department_query = ko.observable(""),
+
+	    this.professorToShow = ko.pureComputed(function(){
+	    	var input_name_query = this.prof_name_query();
+	    	var input_department_query = this.prof_department_query();
+	    	
+	    	return ko.utils.arrayFilter(this.professors(), function(professor){
+	    		var professor_full_name = professor.first_name + " " + professor.last_name;
+	    		return (professor_full_name.toLowerCase().indexOf(input_name_query.toLowerCase()) >= 0) &&
+					   (professor.department.toLowerCase().indexOf(input_department_query.toLowerCase())  >= 0);
+	    	});
+	    }, this);
+	};
+	
+	//Sorting
+	this.sortByFirstNameA = function() { this.professors.sort(function(a, b) { return a.first_name <= b.first_name ? -1 : 1; });};
+	this.sortByFirstNameD = function() { this.professors.sort(function(a, b) { return a.first_name > b.first_name ? -1 : 1; });};
+	this.sortByLastNameA = function() { this.professors.sort(function(a, b) { return a.last_name <= b.last_name ? -1 : 1; });};
+	this.sortByLastNameD = function() { this.professors.sort(function(a, b) { return a.last_name > b.last_name ? -1 : 1; });};
+	this.sortByDepartmentA3 = function() { this.professors.sort(function(a, b) { return a.department <= b.department ? -1 : 1; }); };
+	this.sortByDepartmentD3 = function() { this.professors.sort(function(a, b) { return a.department > b.department ? -1 : 1; }); };
+	this.sortByScoreHighToLow3 = function() { this.professors.sort(function(a, b) { return a.meta_score > b.meta_score ? -1 : 1; });};
+	this.sortByScoreLowToHigh3 = function() { this.professors.sort(function(a, b) { return a.meta_score <= b.meta_score ? -1 : 1; });};	
+	professorModel = new ProfessorModel([]);
+	ko.applyBindings(professorModel, document.getElementById("search-by-prof"));
+</script>
+{% for prof in prof_list %}
+<script> professorModel.addProf("{{ prof.pk }}", "{{ prof.first_name }}", "{{ prof.last_name }}", "{{ prof.department }}", "{{ prof.meta_score }}", "{{ prof.review_set.count }}"); 
+</script>
+{% endfor %}
+
